@@ -3,12 +3,12 @@ import { TypebootService } from "typeboot";
 @TypebootService
 export class FooService {
 
-  getFoos() {
-    return [];
+  getFoos(baz: number) {
+    return baz;
   }
 }
 
-@TypebootService
-export class BarService {
-  
-}
+// @TypebootService
+// export class BarService {
+
+// }

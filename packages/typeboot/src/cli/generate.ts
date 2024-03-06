@@ -33,16 +33,16 @@ const findClassDeclarationNodes = (program: ts.Program): Array<{ node: ts.ClassD
   return nodes;
 }
 
-const findConstructorParamNodes = (classNode: ts.ClassDeclaration): ts.ParameterDeclaration[] => {
-
-  const constructorParams: ts.ParameterDeclaration[] = [];
-  ts.forEachChild(classNode, node => {
-    if (ts.isParameter(node)) {
-      constructorParams.push(node);
+const selectChildNodes = <T extends ts.Node>(node: ts.Node, selector: (node: ts.Node) => node is T) => {
+  const constructors: T[] = [];
+  const visitNode = (node: ts.Node) => {
+    if (selector(node)) {
+      constructors.push(node);
     }
-  })
-
-  return constructorParams;
+    ts.forEachChild(node, visitNode);
+  }
+  ts.forEachChild(node, visitNode);
+  return constructors;
 }
 
 const getDecorators = (node: ts.Node): ts.Decorator[] => {
@@ -115,14 +115,49 @@ const createDependencyImports = (program: ts.Program, outfile: string) => {
     .map(([moduleImportSpecifier, componentNames]) => _import(moduleImportSpecifier, [...componentNames]));
 }
 
-const wipParams = (program: ts.Program) => {
+type Dependency = {
+  name: string;
+  type: string;
+}
+
+const getConstrutorDependencies = (classNode: ts.ClassDeclaration): Dependency[] => {
+  const [constructorNode] = selectChildNodes(classNode, ts.isConstructorDeclaration);
+  if (!constructorNode) return [];
+
+  const paramNodes = selectChildNodes(constructorNode, ts.isParameter);
+  if (paramNodes.length === 0) return [];
+
+  return paramNodes.map(node => {
+    const name = ts.isIdentifier(node.name) ? node.name.text : undefined;
+    const type = ts.isTypeNode(node.type!) ? (node.type as any)?.typeName?.text as string : undefined;
+    if (!name || !type) {
+      throw Error("Failed to find name or type for constructor dependency");
+    }
+
+    return { name, type };
+  });
+}
+
+const getComponentDependencies = (program: ts.Program) => {
+  const components: Record<string, Dependency[]> = {};
   for (const { node } of findClassDeclarationNodes(program)) {
-    for (const _decorator of getTypebootDecorators(node)) {
+    for (const _decorator of getTypebootDecorators(node)) { // TODO: need a better way to apply multiple decorators
       if (node.name === undefined) continue;
-      console.log("AAAA", node)
+      components[node.name.text] = getConstrutorDependencies(node);
     }
   }
+  return components;
 }
+
+const createBootComponentObject = (component: Pick<BootComponent, 'name' | 'dependencies'>) => _object({ 
+  name: _string(component.name), 
+  _constructor: _id(component.name),
+  dependencies: _array(component.dependencies.map(_string)),
+});
+
+const createBootDependencies = (program: ts.Program) =>
+  Object.entries(getComponentDependencies(program))
+    .map(([name, dependencies]) => createBootComponentObject({ name, dependencies: dependencies.map(d => d.type) }));
 
 export const generate = () => {
   const { tsconfigPath, outfile } = sourceCliArgs();
@@ -134,25 +169,11 @@ export const generate = () => {
     options: tsconfig.options,
   });
 
-  wipParams(program)
-
-  const createBootComponentObject = (component: Pick<BootComponent, 'name' | 'dependencies'>) => _object({ 
-    name: _string(component.name), 
-    _constructor: _id(component.name),
-    dependencies: _array(component.dependencies.map(_string)),
-  });
-  
-  // have imports
-  // now need to parse params for dependencies
-
   const bootTs = writeStatementsToString([
     _import("typeboot", ["boot"]),
     ...createDependencyImports(program, outfile),
     _functionCall("boot", [
-      _array([
-        createBootComponentObject({ name: 'FooService', dependencies: [] }),
-        createBootComponentObject({ name: 'FooRouter', dependencies: ['FooRouter'] }),
-      ])
+      _array(createBootDependencies(program))
     ])
   ]);
 

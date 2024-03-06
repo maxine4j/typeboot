@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "ts-node src/boot.ts",
     "build": "tsc --build",
     "prepare": "ts-patch install",
     "boot:generate": "boot:generate tsconfig.json src/boot.ts"

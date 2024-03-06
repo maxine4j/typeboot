@@ -9,6 +9,6 @@ export class FooRouter {
   ) {}
 
   async getFoos() {
-    return this.fooService.getFoos();
+    return this.fooService == null;
   }
 }
