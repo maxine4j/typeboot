@@ -1,11 +1,11 @@
-import { TypebootController, TypebootInject } from "typeboot";
+import { TypebootController } from "typeboot";
 import { FooService } from "./foo-service";
 
 @TypebootController
 export class FooRouter {
 
   constructor(
-    @TypebootInject private fooService: FooService,
+    private fooService: FooService,
   ) {}
 
   async getFoos() {

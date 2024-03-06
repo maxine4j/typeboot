@@ -9,7 +9,7 @@
     "start": "ts-node src/index.ts",
     "build": "tsc --build",
     "prepare": "ts-patch install",
-    "boot:generate": "boot:generate ./tsconfig.json"
+    "boot:generate": "boot:generate tsconfig.json src/boot.ts"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.2",

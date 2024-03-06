@@ -7,3 +7,8 @@ export class FooService {
     return [];
   }
 }
+
+@TypebootService
+export class BarService {
+  
+}

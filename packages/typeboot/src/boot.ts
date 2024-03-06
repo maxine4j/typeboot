@@ -1,11 +1,6 @@
+import { type BootComponent } from "./types";
 
-interface Component {
-  name: string
-  _constructor: new (...args: any[]) => any
-  dependencies: string[]
-}
-
-export const boot = (components: Component[]) => {
+export const boot = (components: BootComponent[]) => {
 
   const initialisedComponents = new Map<string, object>();
   let previousInitialisedComponentCount = initialisedComponents.size;
@@ -30,7 +25,7 @@ export const boot = (components: Component[]) => {
   }
 
   const tryInitialiseComponents = () => {
-    const initialiseComponent = (component: Component) => {
+    const initialiseComponent = (component: BootComponent) => {
       const initialisedDependencies = component.dependencies.map(dependency => initialisedComponents.get(dependency))
       initialisedComponents.set(component.name, new component._constructor(...initialisedDependencies));
     }
