@@ -1,0 +1,42 @@
+{
+  "extends": "@tsconfig/node20/tsconfig.json",
+  "include": ["**/*.ts", "**/*.tsx", "**/*.json"],
+  "exclude": ["**/node_modules/**/*", "**/dist/**/*", "dist"],
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "outDir": "./dist",
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "strictNullChecks": true,
+    "strict": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "strictFunctionTypes": true,
+    "typeRoots": ["node_modules/@types"],
+    "importHelpers": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "alwaysStrict": true,
+    "useUnknownInCatchVariables": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "newLine": "lf",
+    "declaration": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["ESNext", "DOM"],
+    "composite": true,
+    "plugins": [
+      {
+        "transform": "typeboot/dist/transform"
+      }
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "@typeboot/monorepo",
+  "version": "1.0.0",
+  "description": "dependency injection framework",
+  "main": "index.js",
+  "repository": "git@github.com:tim-ings/typeboot.git",
+  "author": "Maxine",
+  "license": "Apache-2.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "services/*"
+  ],
+  "packageManager": "yarn@4.0.2",
+  "scripts": {
+    "build": "turbo run build",
+    "prepare": "turbo run prepare",
+    "test": "turbo run test",
+    "start": "turbo run start",
+    "boot:generate": "yarn workspace boot generate"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.2",
+    "@types/node": "^20.11.24",
+    "ts-node": "^10.9.2",
+    "ts-patch": "^3.1.2",
+    "turbo": "^1.12.4",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "tslib": "^2.6.2",
+    "typia": "^5.4.14"
+  }
+}

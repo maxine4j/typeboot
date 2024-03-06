@@ -1,0 +1,18 @@
+{
+  "name": "typeboot",
+  "description": "",
+  "version": "1.0.0",
+  "packageManager": "yarn@4.0.2",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "generate": "ts-node ./src/cli/generate.ts"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "tslib": "^2.6.2"
+  }
+}
