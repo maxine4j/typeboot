@@ -1,26 +1,40 @@
 
 interface Component {
   name: string
-  objectConstructor: new (...args: any[]) => any
+  _constructor: new (...args: any[]) => any
   dependencies: string[]
 }
 
 export const boot = (components: Component[]) => {
 
   const initialisedComponents = new Map<string, object>();
+  let previousInitialisedComponentCount = initialisedComponents.size;
 
+  const capturePreviousState = () => previousInitialisedComponentCount = initialisedComponents.size;
+  const failedToInitialiseMoreComponents = () => previousInitialisedComponentCount === initialisedComponents.size;
+  const allComponentsHaveBeenInitialised = () => initialisedComponents.size === components.length;
   const hasBeenInisialised = (componentName: string) => initialisedComponents.has(componentName);
-  
-  const initialiseComponent = (component: Component) => {
-    const initialisedDependencies = component.dependencies.map(dependency => initialisedComponents.get(dependency))
-    const missingDependencies = initialisedDependencies.filter(d => d === undefined);
-    if (missingDependencies.length > 0) {
-      throw new Error(`Typeboot: Failed to initialise component "${component.name}". The following dependencies are missing: ${JSON.stringify(missingDependencies)}`);
-    }
-    initialisedComponents.set(component.name, new component.objectConstructor(...initialisedDependencies));
+
+  const formatFailedToBootError = () => {
+    const missingComponents = components.filter(component => !hasBeenInisialised(component.name));
+
+    const missingDependencyErrorMessages = missingComponents.map(component => {
+      const missingDependencies = component.dependencies
+        .map(dependency => ({ dependency, initialisedComponent: initialisedComponents.get(dependency) }))
+        .filter(({ initialisedComponent }) => initialisedComponent === undefined)
+        .map(({ dependency }) => dependency);
+      return `"${component.name}" is missing: ${JSON.stringify(missingDependencies)}; `;
+    });
+
+    return `Typeboot: Failed to boot. The following components could not be initialised: \n${JSON.stringify(missingDependencyErrorMessages, null, 2)}`;
   }
 
   const tryInitialiseComponents = () => {
+    const initialiseComponent = (component: Component) => {
+      const initialisedDependencies = component.dependencies.map(dependency => initialisedComponents.get(dependency))
+      initialisedComponents.set(component.name, new component._constructor(...initialisedDependencies));
+    }
+
     for (const component of components) {
       if (hasBeenInisialised(component.name)) continue;
       if (component.dependencies.every(hasBeenInisialised)) {
@@ -29,23 +43,14 @@ export const boot = (components: Component[]) => {
     }
   }
 
-  let previousInitialisedCount = initialisedComponents.size;
-  const failedToInitialiseMoreComponents = () => previousInitialisedCount === initialisedComponents.size;
-  const allComponentsHaveBeenInitialised = () => initialisedComponents.size === components.length;
-
   while (true) {
     tryInitialiseComponents();
     if (allComponentsHaveBeenInitialised()) break;
     if (failedToInitialiseMoreComponents()) {
-      const missingComponents = components.filter(component => !hasBeenInisialised(component.name)).map(component => component.name);
-      throw new Error(`Typeboot: Failed to boot. The following components could not be initialised: ${JSON.stringify(missingComponents)}, ${JSON.stringify({
-        initialisedComponents,
-        previousInitialisedCount,
-        components
-      })}`)
+      throw formatFailedToBootError();
     }
-    previousInitialisedCount = initialisedComponents.size;
+    capturePreviousState();
   }
 
-  console.log("Successfully booted all components")
+  console.log("Typeboot: Successfully booted all components")
 }

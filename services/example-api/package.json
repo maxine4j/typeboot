@@ -8,7 +8,8 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsc --build",
-    "prepare": "ts-patch install"
+    "prepare": "ts-patch install",
+    "boot:generate": "boot:generate ./tsconfig.json"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.2",

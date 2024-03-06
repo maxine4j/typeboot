@@ -1,18 +1,56 @@
-// 1. load each file in a ts project
-// 2. parse each file
-// 3. recurse through each to find classes marked with dectorators
-// 4. use controller, scheduled, worker, etc. annotations to build map of dependencies
-//      we need to figure out the order in which we can create them
-//      can probably loop over the map and try to recursively instantiate each until we fail, then keep going until we loop 2 times in a
-//      row with no change to the number of booted components, if that is true before we finish booting then we crash
+import * as ts from "typescript";
+import * as path from "path";
+import { _array, _functionCall, _id, _import, _object, _string } from "../code-gen/statements";
+import { writeStatementsToString } from "../code-gen/writer";
 
-import ts from "typescript";
+const diagFormatter = {
+  getCanonicalFileName: (fileName: string) => fileName,
+  getCurrentDirectory: ts.sys.getCurrentDirectory,
+  getNewLine: () => ts.sys.newLine
+}
+
+console.log(__dirname)
+
+function getTsFilesInProject(tsConfigPath: string): string[] {
+
+  // Load tsconfig.json file
+  const configFile = ts.readConfigFile(tsConfigPath, ts.sys.readFile);
+
+  if (configFile.error) {
+      throw new Error("Error while reading tsconfig.json: " + ts.formatDiagnostics([configFile.error], diagFormatter));
+  }
+
+  // Parse the JSON configuration file
+  const configParseResult = ts.parseJsonConfigFileContent(configFile.config, ts.sys, path.dirname(tsConfigPath));
+
+  if (configParseResult.errors.length > 0) {
+      throw new Error("Error parsing tsconfig.json: " + ts.formatDiagnostics(configParseResult.errors, diagFormatter));
+  }
+
+  return configParseResult.fileNames;
+}
 
 // Create an empty array to hold the statements
-const statements: ts.Statement[] = [];
+console.log(writeStatementsToString([
+  _import("typeboot", ["boot"]),
+  // import customer components
+  // ...,
+  // generate dependencies array passed to boot from annotations
+  _functionCall("boot", [
+    _array([
+      _object({ 
+        name: _string("FooService"), 
+        _constructor: _id("FooService"),
+        dependencies: _array([]),
+      }),
+      _object({ 
+        name: _string("FooRouter"), 
+        _constructor: _id("FooRouter"),
+        dependencies: _array([_string("FooService")]),
+      }),
+    ])
+  ])
+]));
 
-// Create a source file with the statements
-const sourceFile = ts.factory.createSourceFile(statements, ts.factory.createToken(ts.SyntaxKind.EndOfFileToken), ts.NodeFlags.None);
-
-// Print the source file
-console.log(ts.createPrinter().printFile(sourceFile));
+const tsconfigPath = process.argv[2];
+console.log(getTsFilesInProject(path.join(process.cwd(), tsconfigPath)));

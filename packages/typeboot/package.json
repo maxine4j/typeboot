@@ -5,10 +5,13 @@
   "packageManager": "yarn@4.0.2",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc --build",
-    "generate": "ts-node ./src/cli/generate.ts"
+    "build": "tsc --build"
+  },
+  "bin": {
+    "boot:generate": "./dist/cli/generate"
   },
   "devDependencies": {
+    "@types/node": "^20.11.24",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },

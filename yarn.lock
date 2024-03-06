@@ -5037,9 +5037,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "typeboot@workspace:packages/typeboot"
   dependencies:
+    "@types/node": "npm:^20.11.24"
     ts-node: "npm:^10.9.2"
     tslib: "npm:^2.6.2"
     typescript: "npm:^5.3.3"
+  bin:
+    "boot:generate": ./dist/cli/generate
   languageName: unknown
   linkType: soft
 
