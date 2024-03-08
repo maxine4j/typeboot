@@ -1,7 +1,7 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
-import { TypebootRouteDescriptor } from '../types';
 import Router from '@koa/router';
+import { HttpRequestContext, TypebootRouteDescriptor } from '../types';
 
 export const startHttpApi = (
   routes: TypebootRouteDescriptor[], 
@@ -16,11 +16,8 @@ export const startHttpApi = (
   for (const route of routes) {
     const component = initialisedComponents.get(route.routerComponentName);
     if (!component) throw Error(`Typeboot: Failed to find router '${route.routerComponentName}' when initialising route: ${route.httpMethod} ${route.path}`);
-    const routeHandler = component[route.routerMethodName] as (ctx: Koa.Context) => Promise<void>;
-
-    router.register(route.path, [route.httpMethod], ctx => {
-      routeHandler.bind(routeHandler)(ctx);
-    })
+    const routeHandler = component[route.routerMethodName] as (ctx: HttpRequestContext) => Promise<void>;
+    router.register(route.path, [route.httpMethod], routeHandler.bind(component));
   }
 
   app

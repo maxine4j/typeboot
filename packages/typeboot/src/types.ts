@@ -1,3 +1,5 @@
+export type { Context as HttpRequestContext } from "koa";
+
 export type TypebootRole
   = 'component'
   | 'router'

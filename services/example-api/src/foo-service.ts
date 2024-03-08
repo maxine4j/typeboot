@@ -7,8 +7,3 @@ export class FooService {
     return baz;
   }
 }
-
-// @TypebootService
-// export class BarService {
-
-// }

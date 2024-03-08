@@ -14,7 +14,9 @@ boot({
         {
             name: "FooRouter",
             objectConstructor: FooRouter,
-            dependencies: [],
+            dependencies: [
+                "FooService"
+            ],
             roles: [
                 "component",
                 "router"
