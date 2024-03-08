@@ -1,5 +1,6 @@
 import path from "path";
 import ts from "typescript";
+import fs from "fs";
 import { _array, _functionCall, _id, _import, _object, _string, writeStatementsToString } from "../typescript/writer";
 import { loadTsConfig } from "../typescript/config";
 import type { ConstructableTypebootComponentDescriptor, TypebootRouteDescriptor } from "../types";
@@ -66,7 +67,12 @@ export const generate = () => {
     } satisfies Record<keyof Parameters<typeof boot>[0], ts.Expression>)])
   ]);
 
-  console.log(bootTs);
+  fs.writeFileSync(outfilePath, bootTs);
+  console.log(`Typeboot: Successfully generated boot script`, {
+    outfilePath: path.join(process.cwd(), outfilePath), 
+    componentsCount: components.length, 
+    routesCount: routes.length,
+  });
 };
 
 generate();

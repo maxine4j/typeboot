@@ -17,7 +17,8 @@
     "prepare": "turbo run prepare",
     "test": "turbo run test",
     "start": "turbo run start",
-    "boot:generate": "yarn workspace example-api boot:generate"
+    "boot:generate": "yarn workspace example-api boot:generate",
+    "build-generate-start": "yarn build --force && yarn boot:generate && yarn start"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.2",
