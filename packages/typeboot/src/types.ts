@@ -1,12 +1,20 @@
-export interface BootComponent {
+export type TypebootRole
+  = 'component'
+  | 'router'
+
+export interface TypebootComponentDescriptor {
   name: string
-  _constructor: new (...args: any[]) => any
   dependencies: string[]
+  roles: TypebootRole[]
 }
 
-export type TypebootMetadata = {
-  componentRole: 
-    | 'serviceClass'
-    | 'injectParam' 
-    | 'controllerClass'
+export interface TypebootRouteDescriptor {
+  routerComponentName: string
+  routerMethodName: string
+  httpMethod: string
+  path: string
+}
+
+export interface ConstructableTypebootComponentDescriptor extends TypebootComponentDescriptor {
+  objectConstructor: new (...args: any[]) => any
 }

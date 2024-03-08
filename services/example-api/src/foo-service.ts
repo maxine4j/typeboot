@@ -1,9 +1,9 @@
-import { TypebootService } from "typeboot";
+import { TypebootComponent } from "typeboot";
 
-@TypebootService
+@TypebootComponent
 export class FooService {
 
-  getFoos(baz: number) {
+  doFoo(baz: number) {
     return baz;
   }
 }

@@ -8,14 +8,20 @@
     "build": "tsc --build"
   },
   "bin": {
-    "boot:generate": "./dist/cli/generate"
+    "boot:generate": "./dist/generate/cli"
   },
   "devDependencies": {
+    "@types/koa": "^2.15.0",
+    "@types/koa-bodyparser": "^4.3.12",
+    "@types/koa__router": "^12",
     "@types/node": "^20.11.24",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@koa/router": "^12.0.1",
+    "koa": "^2.15.0",
+    "koa-bodyparser": "^4.4.1",
     "tslib": "^2.6.2"
   }
 }

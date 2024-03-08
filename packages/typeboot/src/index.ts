@@ -1,6 +1,6 @@
 export { 
-  TypebootController,
-  TypebootService,
+  TypebootHttpRouter,
+  TypebootComponent,
 } from "./decorators";
 
-export { boot } from "./boot";
+export { boot } from "./runtime/boot";

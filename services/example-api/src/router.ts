@@ -1,14 +1,17 @@
-import { TypebootController } from "typeboot";
-import { FooService } from "./foo-service";
+import { TypebootHttpRouter } from "typeboot";
+// import { FooService } from "./foo-service";
+import { TypebootRoute } from "typeboot/dist/decorators";
 
-@TypebootController
+@TypebootHttpRouter
 export class FooRouter {
 
   constructor(
-    private fooService: FooService,
+    // private fooService: FooService,
   ) {}
 
-  async getFoos() {
-    return this.fooService == null;
+  @TypebootRoute('get', '/foos')
+  async fooHandler(ctx: any) {
+    ctx.status = 200;
+    ctx.body = "hello typeboot, "
   }
 }
