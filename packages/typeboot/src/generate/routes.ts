@@ -14,14 +14,9 @@ const isTypebootRouteDecorator = (decorator: ParsedDecorator) => decorator.name 
 const tryParseRequestHandlers = (routerComponentName: string, methodNode: ts.MethodDeclaration): ParsedRoute | undefined => {
   const routerMethodName = (methodNode.name as ts.Identifier).text;
   const routeDecorators = parseDecorators(methodNode).filter(isTypebootRouteDecorator);
-  console.log('AAAAAAAAAAAAAAAAA', {
-    routeDecorators,
-    all: parseDecorators(methodNode)
-  })
   if (routeDecorators.length === 0) return;
   if (routeDecorators.length > 1) throw new Error(`Typeboot: Route method must not have more than one TypebootRoute decorator: ${routerComponentName}::${routerMethodName}`) 
   const [httpMethod, path] = routeDecorators[0].arguments;
-  console.log('BBBBBBBBBBBBB')
 
   return {
     routerComponentName,

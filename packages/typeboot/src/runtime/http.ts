@@ -24,10 +24,10 @@ export const startHttpApi = (
   }
 
   app
-      .use(bodyParser())
-      .use(router.routes())
-      .listen(port)
-      .on('listening', () => {
-        console.log(`Listening on port ${port}`)
-      });
+    .use(bodyParser())
+    .use(router.routes())
+    .listen(port)
+    .on('listening', () => {
+      console.log(`Listening on port ${port}`)
+    });
 };
