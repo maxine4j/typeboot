@@ -1,6 +1,7 @@
 export { 
   TypebootHttpRouter,
   TypebootComponent,
+  TypebootRoute,
 } from "./decorators";
 
 export { boot } from "./runtime/boot";

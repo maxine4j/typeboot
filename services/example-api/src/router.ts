@@ -1,6 +1,5 @@
-import { TypebootHttpRouter, HttpRequestContext } from "typeboot";
+import { TypebootHttpRouter, TypebootRoute, HttpRequestContext } from "typeboot";
 import { FooService } from "./foo-service";
-import { TypebootRoute } from "typeboot/dist/decorators";
 
 @TypebootHttpRouter
 export class FooRouter {
