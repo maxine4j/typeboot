@@ -28,6 +28,6 @@ export const startHttpApi = (
     .use(router.routes())
     .listen(port)
     .on('listening', () => {
-      console.log(`Listening on port ${port}`)
+      console.log(`Typeboot: Listening on ${port}`)
     });
 };

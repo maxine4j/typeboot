@@ -57,11 +57,6 @@ export const generate = () => {
   const components = parseComponents(program);
   const routes = parseRoutes(components);
 
-  console.log('parsed components', {
-    components,
-    routes
-  })
-
   const bootTs = writeStatementsToString([
     _import("typeboot", ["boot"]),
     ...generateDependencyImportStatements(components, outfilePath),
